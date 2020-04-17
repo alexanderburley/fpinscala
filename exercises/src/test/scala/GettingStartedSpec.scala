@@ -3,16 +3,27 @@ import org.scalatest.FlatSpec
 
 class GettingStartedSpec extends FlatSpec {
 
-  "isSorted" should "return true for a sorted array of integers" in {
-    val arr = Array(1, 2, 3)
-    def gtInt(x: Int, y: Int) = x < y
-    assert(isSorted(arr, gtInt), true)
-  }
+  def gtBool(x: Boolean, y: Boolean) = if (x || (!x && !y)) true else false
+  def gtInt(x: Int, y: Int) = x > y
 
   "isSorted" should "return true for a sorted array of integers" in {
-    val arr = Array(1, 2, 3)
-    def gtInt(x: Int, y: Int) = x < y
-    assert(isSorted(arr, gtInt), true)
+    assert(isSorted(Array(1, 2, 3), gtInt))
+  }
+
+  it should "return false for an unsorted array of integers" in {
+    assert(!isSorted(Array(3, 2, 1), gtInt))
+  }
+
+  it should "return true for an empty array" in {
+    assert(isSorted(Array(), gtInt))
+  }
+
+  it should "return true for a sorted boolean array" in {
+    assert(isSorted(Array(false, false, true, true), gtBool))
+  }
+
+  it should "return false for an unsorted boolean array" in {
+    assert(!isSorted(Array(true, true, false, false), gtBool))
   }
 
 }
