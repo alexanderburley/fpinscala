@@ -67,19 +67,31 @@ class ListSpec extends FlatSpec {
     assert(eval(dropWhile(e, gt), e))
   }
 
-//   "filter" should "drop 2 elements l" in {
-//     assert(eval(filter(l, gt), List(1)))
-//   }
-//   it should "drop 0 elements for none gt" in {
-//     assert(eval(filter(List(1, 1, 1), gt), List(1, 1, 1)))
-//   }
+  "filter" should "drop 2 elements l" in {
+    assert(eval(filter(l, gt), List(1)))
+  }
+  it should "drop 0 elements for none gt" in {
+    assert(eval(filter(List(1, 1, 1), gt), List(1, 1, 1)))
+  }
 
-//   it should "drop all elements for all gt" in {
-//     assert(eval(filter(List(2, 3, 4), gt), e))
-//   }
+  it should "drop all elements for all gt" in {
+    assert(eval(filter(List(2, 3, 4), gt), e))
+  }
 
-//   it should "drop 0 elements for emptylist gt" in {
-//     assert(eval(filter(e, gt), e))
-//   }
+  it should "drop 0 elements for emptylist gt" in {
+    assert(eval(filter(e, gt), e))
+  }
+
+  "init" should "return all but the last element of a list l" in {
+    assert(eval(init(l), List(1, 2)))
+  }
+
+  it should "return Nil for empty list" in {
+    assert(eval(init(e), e))
+  }
+
+  it should "return return empty for single element" in {
+    assert(eval(init(List(1)), e))
+  }
 
 }
