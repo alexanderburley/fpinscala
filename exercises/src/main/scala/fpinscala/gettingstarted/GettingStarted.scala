@@ -122,16 +122,6 @@ object MonomorphicBinarySearch {
 }
 
 object PolymorphicFunctions {
-
-  def main(args: Array[String]): Unit = {
-    val sortedArr = Array(1, 2, 3)
-    val unsortedArr = Array(3, 2, 1)
-    def gtInt(x: Int, y: Int) = x < y
-    println(isSorted(sortedArr, gtInt))
-    println(isSorted(unsortedArr, gtInt))
-    println(isSorted(Array(), gtInt))
-  }
-
   // Here's a polymorphic version of `binarySearch`, parameterized on
   // a function for testing whether an `A` is greater than another `A`.
   def binarySearch[A](as: Array[A], key: A, gt: (A, A) => Boolean): Int = {
@@ -153,6 +143,7 @@ object PolymorphicFunctions {
   // Exercise 2: Implement a polymorphic function to check whether
   // an `Array[A]` is sorted
   def isSorted[A](as: Array[A], gt: (A, A) => Boolean): Boolean = {
+    @annotation.tailrec
     def loop(i: Int): Boolean =
       if (i == as.length) true
       else if (i == 0 || gt(as(i), as(i - 1))) loop(i + 1)
@@ -173,13 +164,12 @@ object PolymorphicFunctions {
   // Note that `=>` associates to the right, so we could
   // write the return type as `A => B => C`
   def curry[A, B, C](f: (A, B) => C): A => (B => C) =
-    ???
+    a => b => f(a, b)
 
   // NB: The `Function2` trait has a `curried` method already
 
   // Exercise 4: Implement `uncurry`
-  def uncurry[A, B, C](f: A => B => C): (A, B) => C =
-    ???
+  def uncurry[A, B, C](f: A => B => C): (A, B) => C = (a, b) => f(a)(b)
 
   /*
   NB: There is a method on the `Function` object in the standard library,
@@ -193,6 +183,5 @@ object PolymorphicFunctions {
 
   // Exercise 5: Implement `compose`
 
-  def compose[A, B, C](f: B => C, g: A => B): A => C =
-    ???
+  def compose[A, B, C](f: B => C, g: A => B): A => C = a => f(g(a))
 }

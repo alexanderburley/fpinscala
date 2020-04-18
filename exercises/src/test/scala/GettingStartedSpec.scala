@@ -26,4 +26,19 @@ class GettingStartedSpec extends FlatSpec {
     assert(!isSorted(Array(true, true, false, false), gtBool))
   }
 
+  val add = (a: Int, b: Int) => a + b;
+
+  "curry" should "partially apply a value to a function" in {
+    assert(curry(add)(5)(2) === 7)
+  }
+
+  "uncurry" should "reverse partial application" in {
+    assert(uncurry(curry(add))(5, 2) === 7)
+  }
+
+  "compose" should "compose two functions" in {
+    val add2 = curry(add)(2)
+    val add10 = curry(add)(10)
+    assert(compose(add2, add10)(2) === 14)
+  }
 }
