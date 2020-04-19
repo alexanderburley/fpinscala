@@ -6,6 +6,7 @@ class ListSpec extends FlatSpec {
 
   def eval[A](x: List[A], y: List[A]) = x.toString == y.toString
   val gt = { i: Int => i > 1 }
+  val * = (x: Int, y: Int) => x * y
 
   val l = List(1, 2, 3)
   val e = List()
@@ -92,6 +93,28 @@ class ListSpec extends FlatSpec {
 
   it should "return return empty for single element" in {
     assert(eval(init(List(1)), e))
+  }
+
+  "Exercise 3.7" should "We cannot halt the recursions as we always have to traverse to the end of the list" in {}
+
+  // "Exercise 3.8" should "" in {
+  //   println("foldRight:", foldRight(List(1, 2, 3), Nil: List[Int])(Cons(_, _)))
+  // }
+
+  "length" should "Return 3 for length of l" in {
+    assert(length(l) === 3)
+  }
+
+  it should "Return 1 for length of list of 1" in {
+    assert(length(List(1)) === 1)
+  }
+
+  it should "Return 0 for length of e" in {
+    assert(length(e) === 0)
+  }
+
+  "foldLeft" should "reduce l into 6" in {
+    assert(foldLeft(l, 1)(*) == 6)
   }
 
 }
