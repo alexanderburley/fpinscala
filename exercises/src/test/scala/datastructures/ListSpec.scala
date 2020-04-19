@@ -7,6 +7,8 @@ class ListSpec extends FlatSpec {
   def eval[A](x: List[A], y: List[A]) = x.toString == y.toString
   val gt = { i: Int => i > 1 }
   val * = (x: Int, y: Int) => x * y
+  val add = { x: Int => x + 1 }
+  val stringit = { x: Double => x.toString }
 
   val l = List(1, 2, 3)
   val e = List()
@@ -66,21 +68,6 @@ class ListSpec extends FlatSpec {
 
   it should "drop 0 elements for emptylist gt" in {
     assert(eval(dropWhile(e, gt), e))
-  }
-
-  "filter" should "drop 2 elements l" in {
-    assert(eval(filter(l, gt), List(1)))
-  }
-  it should "drop 0 elements for none gt" in {
-    assert(eval(filter(List(1, 1, 1), gt), List(1, 1, 1)))
-  }
-
-  it should "drop all elements for all gt" in {
-    assert(eval(filter(List(2, 3, 4), gt), e))
-  }
-
-  it should "drop 0 elements for emptylist gt" in {
-    assert(eval(filter(e, gt), e))
   }
 
   "init" should "return all but the last element of a list l" in {
@@ -213,4 +200,88 @@ class ListSpec extends FlatSpec {
   it should "flatten empty list" in {
     assert(eval(flatten(e), e))
   }
+
+  "add1" should "add 1 to each element in the list" in {
+    assert(eval(add1(l), List(2, 3, 4)))
+  }
+
+  "doubleToString" should "convert list of doubles to strings" in {
+    assert(eval(doubleToString(List(1.0, 2.0, 3.0)), List("1.0", "2.0", "3.0")))
+  }
+
+  "map" should "add 1 to each element" in {
+    assert(eval(map(l)(add), List(2, 3, 4)))
+  }
+
+  "map" should "stringify each element" in {
+    assert(eval(map(List(1.0, 2.0, 3.0))(stringit), List("1.0", "2.0", "3.0")))
+  }
+
+  "filter" should "drop 2 elements l" in {
+    assert(eval(filter(l, gt), List(1)))
+  }
+  it should "drop 0 elements for none gt" in {
+    assert(eval(filter(List(1, 1, 1), gt), List(1, 1, 1)))
+  }
+
+  it should "drop all elements for all gt" in {
+    assert(eval(filter(List(2, 3, 4), gt), e))
+  }
+
+  it should "drop 0 elements for emptylist gt" in {
+    assert(eval(filter(e, gt), e))
+  }
+
+  "flatMap" should "map an array into a list of lists and flatten it" in {
+    assert(eval(flatMap(l)(x => List(x + 1)), List(2, 3, 4)))
+  }
+
+  "filter2" should "drop 2 elements l" in {
+    assert(eval(filter2(l, gt), List(1)))
+  }
+
+  it should "drop 0 elements for none gt" in {
+    assert(eval(filter2(List(1, 1, 1), gt), List(1, 1, 1)))
+  }
+
+  it should "drop all elements for all gt" in {
+    assert(eval(filter2(List(2, 3, 4), gt), e))
+  }
+
+  it should "drop 0 elements for emptylist gt" in {
+    assert(eval(filter2(e, gt), e))
+  }
+
+  "zipWithInt" should "add values of one list onto the other" in {
+    assert(eval(zipWithInt(l, l), List(2, 4, 6)))
+  }
+
+  it should "add empty lists" in {
+    assert(eval(zipWithInt(e, e), e))
+  }
+
+  it should "add empty list to l" in {
+    assert(eval(zipWithInt(l, e), l))
+  }
+
+  it should "add nothing to initial list" in {
+    assert(eval(zipWithInt(e, l), e))
+  }
+
+  "zipWith" should "add values of one list onto the other" in {
+    assert(eval(zipWith(l, l)(_ + _), List(2, 4, 6)))
+  }
+
+  it should "add empty lists" in {
+    assert(eval(zipWith(e, e)((x: Int, y: Int) => x + y), e))
+  }
+
+  it should "add empty list to l" in {
+    assert(eval(zipWith(l, List[Int]())(_ + _), l))
+  }
+
+  it should "add nothing to initial list" in {
+    assert(eval(zipWith(List[Int](), l)(_ + _), e))
+  }
+
 }

@@ -61,6 +61,11 @@ object List { // `List` companion object. Contains functions for creating and wo
     case Nil        => Nil
   }
 
+  def head[A](l: List[A]): A = l match {
+    case Cons(h, _) => h
+    case Nil        => throw new Exception
+  }
+
   def setHead[A](l: List[A], h: A): List[A] = l match {
     case Cons(_, t) => Cons(h, t)
     case Nil        => Cons(h, Nil)
@@ -143,5 +148,37 @@ object List { // `List` companion object. Contains functions for creating and wo
   def concat[A](l: List[List[A]]): List[A] = // Official answer
     foldRight(l, Nil: List[A])(append)
 
-  def map[A, B](l: List[A])(f: A => B): List[B] = ???
+  def add1(l: List[Int]): List[Int] =
+    foldRight(l, Nil: List[Int])((h, t) => Cons(h + 1, t))
+
+  def doubleToString(l: List[Double]): List[String] =
+    foldRight(l, Nil: List[String])((h, t) => Cons(h.toString, t))
+
+  def map[A, B](l: List[A])(f: A => B): List[B] =
+    foldRight(l, Nil: List[B])((x, xs) => Cons(f(x), xs))
+
+  def flatMap[A, B](l: List[A])(f: A => List[B]): List[B] =
+    flatten(map(l)(f))
+
+  def filter2[A](l: List[A], f: A => Boolean): List[A] =
+    flatMap(l)((x) => if (f(x)) Nil else List(x))
+
+  def zipWithInt(lx: List[Int], ly: List[Int]): List[Int] = lx match {
+    case Nil => lx
+    case Cons(hx, tx) =>
+      ly match {
+        case Nil          => lx
+        case Cons(hy, ty) => Cons(hx + hy, zipWithInt(tx, ty))
+      }
+  }
+
+  def zipWith[A](lx: List[A], ly: List[A])(f: (A, A) => A): List[A] =
+    lx match {
+      case Nil => lx
+      case Cons(hx, tx) =>
+        ly match {
+          case Nil          => lx
+          case Cons(hy, ty) => Cons(f(hx, hy), zipWith(tx, ty)(f))
+        }
+    }
 }
