@@ -164,4 +164,42 @@ class ListSpec extends FlatSpec {
     assert(eval(reverse3(List(1)), List(1)))
   }
 
+  "foldLeftWithFoldRight" should "reduce l into 6" in {
+    assert(foldLeftWithFoldRight(l, 1)(*) == 6)
+  }
+  it should "reduce empty list to initial" in {
+    assert(foldLeftWithFoldRight(e, 1)(*) == 1)
+  }
+
+  "foldRightWithFoldLeft" should "reduce l into 6" in {
+    assert(foldRightWithFoldLeft(l, 1)(*) == 6)
+  }
+  it should "reduce empty list to initial" in {
+    assert(foldRightWithFoldLeft(e, 1)(*) == 1)
+  }
+
+  "append2" should "append 4 to l" in {
+    assert(eval(append2(l, List(4)), List(1, 2, 3, 4)))
+  }
+
+  it should "append to empty list" in {
+    assert(eval(append2(e, List(4)), List(4)))
+  }
+
+  it should "append nothing" in {
+    assert(eval(append2(l, List()), l))
+  }
+
+  "append3" should "append 4 to l" in {
+    assert(eval(append3(l, List(4)), List(1, 2, 3, 4)))
+  }
+
+  it should "append to empty list" in {
+    assert(eval(append3(e, List(4)), List(4)))
+  }
+
+  it should "append nothing" in {
+    assert(eval(append3(l, List()), l))
+  }
+
 }
