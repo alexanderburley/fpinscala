@@ -199,7 +199,18 @@ class ListSpec extends FlatSpec {
   }
 
   it should "append nothing" in {
-    assert(eval(append3(l, List()), l))
+    assert(eval(append3(l, e), l))
   }
 
+  "flatten" should "flatten a list of list into a single list" in {
+    assert(eval(flatten(List(List(1), List(2), List(3))), List(1, 2, 3)))
+  }
+
+  it should "flatten single list" in {
+    assert(eval(flatten(List(l)), l))
+  }
+
+  it should "flatten empty list" in {
+    assert(eval(flatten(e), e))
+  }
 }
