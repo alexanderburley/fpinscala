@@ -102,5 +102,25 @@ object List { // `List` companion object. Contains functions for creating and wo
     case Cons(h, t) => foldLeft(t, f(z, h))(f)
   }
 
+  def sum3(ns: List[Int]) = foldLeft(ns, 0)(_ + _)
+
+  def product3(ns: List[Double]) = foldLeft(ns, 1.0)(_ * _)
+
+  def length3[A](ns: List[A]): Int = foldLeft(ns, 0)((acc, _) => acc + 1)
+
+  def reverse[A](l: List[A]): List[A] = {
+    def go(l: List[A], acc: List[A]): List[A] = l match {
+      case Nil        => acc
+      case Cons(h, t) => go(t, Cons(h, acc))
+    }
+    go(l, List())
+  }
+
+  def reverse2[A](l: List[A]): List[A] =
+    foldRight(l, List[A]())((x, xs) => append(xs, List(x)))
+
+  def reverse3[A](l: List[A]): List[A] =
+    foldLeft(l, List[A]())((xs, x) => Cons(x, xs))
+
   def map[A, B](l: List[A])(f: A => B): List[B] = ???
 }

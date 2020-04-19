@@ -102,19 +102,66 @@ class ListSpec extends FlatSpec {
   // }
 
   "length" should "Return 3 for length of l" in {
-    assert(length(l) === 3)
+    assert(length(l) == 3)
   }
 
   it should "Return 1 for length of list of 1" in {
-    assert(length(List(1)) === 1)
+    assert(length(List(1)) == 1)
   }
 
   it should "Return 0 for length of e" in {
-    assert(length(e) === 0)
+    assert(length(e) == 0)
+  }
+
+  "length3" should "Return 3 for length of l" in {
+    assert(length3(l) == 3)
+  }
+
+  it should "Return 1 for length of list of 1" in {
+    assert(length3(List(1)) == 1)
+  }
+
+  it should "Return 0 for length of e" in {
+    assert(length3(e) == 0)
   }
 
   "foldLeft" should "reduce l into 6" in {
     assert(foldLeft(l, 1)(*) == 6)
+  }
+  it should "reduce empty list to initial" in {
+    assert(foldLeft(e, 1)(*) == 1)
+  }
+
+  "sum3" should "sum list of (2,3,4) into 9" in {
+    assert(sum3(List(2, 3, 4)) == 9)
+  }
+
+  "product3" should "product list of (2,3,4) into 24" in {
+    assert(product3(List(2, 3, 4)) == 24)
+  }
+
+  "reverse" should "reverse l" in {
+    assert(eval(reverse(l), List(3, 2, 1)))
+  }
+
+  it should "reverse empty list" in {
+    assert(eval(reverse(e), e))
+  }
+
+  it should "reverse single" in {
+    assert(eval(reverse(List(1)), List(1)))
+  }
+
+  "reverse3" should "reverse l" in {
+    assert(eval(reverse3(l), List(3, 2, 1)))
+  }
+
+  it should "reverse empty list" in {
+    assert(eval(reverse3(e), e))
+  }
+
+  it should "reverse single" in {
+    assert(eval(reverse3(List(1)), List(1)))
   }
 
 }
