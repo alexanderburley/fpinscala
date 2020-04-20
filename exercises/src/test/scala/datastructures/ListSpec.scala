@@ -284,4 +284,23 @@ class ListSpec extends FlatSpec {
     assert(eval(zipWith(List[Int](), l)(_ + _), e))
   }
 
+  "hasSubsequence" should "check whether a list l1 is a subsequence of l2" in {
+    assert(hasSubsequence(l, List(1, 2)))
+  }
+
+  it should "Match empty list against l" in {
+    assert(hasSubsequence(l, e))
+  }
+
+  it should "Match l against l" in {
+    assert(hasSubsequence(l, l))
+  }
+
+  it should "Not match  match e against l" in {
+    assert(!hasSubsequence(e, l))
+  }
+
+  it should "Match not match l against l(4)" in {
+    assert(!hasSubsequence(l, List(4)))
+  }
 }
