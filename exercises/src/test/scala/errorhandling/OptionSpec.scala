@@ -74,4 +74,8 @@ class OptionSpec extends FlatSpec {
   it should "combine two empty values" in {
     assert(map2(None, None)(sum) == None)
   }
+
+  "sequence" should "Combine list of options into one option" in {
+    assert(sequence(List(Some(1), Some(2), Some(3))) == Some(List(1, 2, 3)))
+  }
 }
