@@ -1,6 +1,7 @@
 import org.scalatest.FlatSpec
 import scala.{None => _, Option => _, Some => _, Either => _, _}
 import fpinscala.errorhandling._
+import fpinscala.errorhandling.Option._
 
 class OptionSpec extends FlatSpec {
 
@@ -50,5 +51,27 @@ class OptionSpec extends FlatSpec {
     assert((Some(1) filter { x: Int =>
       x == 1
     }) == Some(1))
+  }
+
+  "variance" should "Caculate variance for a sequence" in {
+    assert(variance(Seq(1, 2, 3, 4)) == Some(1.25))
+  }
+
+  val sum = (x: Int, y: Int) => x + y
+
+  "map2" should "combine two Option values using a binary function" in {
+    assert(map2(Some(1), Some(2))(sum) == Some(3))
+  }
+
+  it should "combine first empty value" in {
+    assert(map2(None, Some(1))(sum) == None)
+  }
+
+  it should "combine second empty value" in {
+    assert(map2(Some(1), None)(sum) == None)
+  }
+
+  it should "combine two empty values" in {
+    assert(map2(None, None)(sum) == None)
   }
 }
