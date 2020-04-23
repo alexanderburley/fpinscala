@@ -78,4 +78,20 @@ class OptionSpec extends FlatSpec {
   "sequence" should "Combine list of options into one option" in {
     assert(sequence(List(Some(1), Some(2), Some(3))) == Some(List(1, 2, 3)))
   }
+
+  "traverse" should "map it into an option of a list" in {
+    assert(
+      traverse(List(0, 1, 2))(a => if (a > 0) Some("1") else None) == None
+    )
+  }
+
+  "sequenceViaTraverse" should " map it into an option of a list" in {
+    assert(
+      seqTrav(List(Some(0), None, Some(2))) == None
+    )
+  }
+
+  it should "return the same list" in {
+    seqTrav(List(Some(0), Some(1), Some(2))) == List(Some(0), List(1), Some(2))
+  }
 }

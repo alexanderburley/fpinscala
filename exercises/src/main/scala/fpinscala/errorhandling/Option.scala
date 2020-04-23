@@ -9,6 +9,8 @@ import scala.{
 
 sealed trait Option[+A] {
 
+  // Fail safe convert to another value or None
+
   def map[B](f: A => B): Option[B] = this match {
     case None    => None
     case Some(a) => Some(f(a))
@@ -18,6 +20,8 @@ sealed trait Option[+A] {
     case None    => default
     case Some(x) => x
   }
+
+  // Fail safe convert to another value but fail safe
 
   def flatMap[B](f: A => Option[B]): Option[B] = this match {
     case None    => None
@@ -92,6 +96,7 @@ object Option {
       case Nil    => Some(Nil)
       case h :: t => h flatMap (hh => sequence(t) map (hh :: _))
     }
+
   /*
   It can also be implemented using `foldRight` and `map2`. The type annotation on `foldRight` is needed here; otherwise
   Scala wrongly infers the result type of the fold as `Some[Nil.type]` and reports a type error (try it!). This is an
@@ -100,5 +105,10 @@ object Option {
   def sequence_1[A](a: List[Option[A]]): Option[List[A]] =
     a.foldRight[Option[List[A]]](Some(Nil))((x, y) => map2(x, y)(_ :: _))
 
-  def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] = ???
+  def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] =
+    a.foldRight[Option[List[B]]](Some(Nil))((h, t) => map2(f(h), t)(_ :: _))
+
+  def seqTrav[A](a: List[Option[A]]): Option[List[A]] =
+    traverse(a)(a => a flatMap (ax => Some(ax)))
+
 }
