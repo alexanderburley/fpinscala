@@ -49,9 +49,28 @@ trait Stream[+A] {
     case Cons(h, t) => h() :: t().toList
   }
 
-  def take(n: Int): Stream[A] = ???
+  def take(n: Int): Stream[A] = this match {
+    case _ if n <= 0 => Empty
+    case Cons(h, t)  => cons(h(), t().take(n - 1))
+  }
 
-  def drop(n: Int): Stream[A] = ???
+  /*
+    Create a new Stream[A] from taking the n first elements from this. We can achieve that by recursively
+    calling take on the invoked tail of a cons cell. We make sure that the tail is not invoked unless
+    we need to, by handling the special case where n == 1 separately. If n == 0, we can avoid looking
+    at the stream at all.
+   */
+  def takeAnswer(n: Int): Stream[A] = this match {
+    case Cons(h, t) if n > 1  => cons(h(), t().take(n - 1))
+    case Cons(h, _) if n == 1 => cons(h(), empty)
+    case _                    => empty
+  }
+
+  @annotation.tailrec
+  final def drop(n: Int): Stream[A] = this match {
+    case Cons(_, t) if (n > 0) => t() drop (n - 1)
+    case _                     => this
+  }
 
   def takeWhile(p: A => Boolean): Stream[A] = ???
 
