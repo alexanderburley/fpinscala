@@ -59,4 +59,26 @@ class EitherSpec extends FlatSpec {
   "map2" should "map 2 values" in {
     assert((Right(1).map2(Right(2))((_ + _))) == Right(3))
   }
+
+  "traverse" should "return the first error encountered" in {
+    assert(
+      traverse(List(0, 1, 2))(a => if (a > 0) Right("1") else Left("Error")) == Left(
+        "Error"
+      )
+    )
+  }
+
+  it should "return traversed list" in {
+    assert(
+      traverse(List(0, 1, 2))(a => Right("1")) == Right(List("1", "1", "1"))
+    )
+  }
+
+  "sequence" should "Combine list of options into one option" in {
+    assert(sequence(List(Right(1), Right(2), Right(3))) == Right(List(1, 2, 3)))
+  }
+
+  it should "Return first either if not sequenced" in {
+    assert(sequence(List(Right(1), Right(2), Left("Wrong"))) == Left("Wrong"))
+  }
 }
