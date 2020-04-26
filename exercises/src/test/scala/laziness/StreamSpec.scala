@@ -35,4 +35,12 @@ class StreamSpec extends FlatSpec {
   it should "drop all elements" in {
     assert(s.drop(3).toList == List())
   }
+
+  "takeWhile" should "returns all starting elements matching the predicate" in {
+    assert(s.takeWhile(x => x < 3).toList == List(1, 2))
+  }
+
+  it should "takeFromEmpty" in {
+    assert(Empty.takeWhile { x: Int => x < 3 }.toList == List())
+  }
 }
