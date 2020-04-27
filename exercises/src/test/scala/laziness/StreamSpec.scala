@@ -56,4 +56,12 @@ class StreamSpec extends FlatSpec {
     val l = cons(1, cons(2, cons(0, Empty)))
     assert((!(l forAll { x: Int => x > 0 })))
   }
+
+  "takeWhileFold" should "returns all starting elements matching the predicate" in {
+    assert(s.takeWhileFold(x => x < 3).toList == List(1, 2))
+  }
+
+  it should "take from empty" in {
+    assert(Empty.takeWhile { x: Int => x < 3 }.toList == List())
+  }
 }
