@@ -43,4 +43,17 @@ class StreamSpec extends FlatSpec {
   it should "takeFromEmpty" in {
     assert(Empty.takeWhile { x: Int => x < 3 }.toList == List())
   }
+
+  "forAll" should "check that for all items, they match a predicate" in {
+    assert(s forAll { x => x > 0 })
+  }
+
+  it should "check be true for empty" in {
+    assert(Empty forAll { x: Int => x > 0 })
+  }
+
+  it should "be false for some items in list" in {
+    val l = cons(1, cons(2, cons(0, Empty)))
+    assert((!(l forAll { x: Int => x > 0 })))
+  }
 }
