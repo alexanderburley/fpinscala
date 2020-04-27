@@ -86,7 +86,8 @@ trait Stream[+A] {
   def forAll(p: A => Boolean): Boolean =
     !(this foldRight (false))((a, b) => !p(a) || b)
 
-  def headOption: Option[A] = ???
+  def headOption: Option[A] =
+    (this foldRight (None: Option[A]))((h, t) => Some(h))
 
   // 5.7 map, filter, append, flatmap using foldRight. Part of the exercise is
   // writing your own function signatures.

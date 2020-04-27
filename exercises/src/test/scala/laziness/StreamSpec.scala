@@ -64,4 +64,13 @@ class StreamSpec extends FlatSpec {
   it should "take from empty" in {
     assert(Empty.takeWhile { x: Int => x < 3 }.toList == List())
   }
+
+  "headOption1" should "Optionally take the head" in {
+    assert(s.headOption == Some(1))
+  }
+
+  it should "take empty" in {
+    assert(Empty.headOption == None)
+  }
+
 }
