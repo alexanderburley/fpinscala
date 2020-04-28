@@ -73,4 +73,24 @@ class StreamSpec extends FlatSpec {
     assert(Empty.headOption == None)
   }
 
+  "map" should "map the sequence" in {
+    assert((s map { x: Int => x + 1 }).toList === List(2, 3, 4))
+  }
+
+  it should "map empty list" in {
+    assert((Empty.map(e => e)).toList == List())
+  }
+
+  "filter" should "filter second element" in {
+    assert((s filter { x => x != 2 }).toList == List(1, 3))
+  }
+
+  "append" should "append element" in {
+    assert(s.append(cons(4, Empty)).toList == List(1, 2, 3, 4))
+  }
+
+  "flatMap" should "flatmap the element" in {
+    assert((s.flatMap { x => s }).toList == s.toList ::: s.toList ::: s.toList)
+  }
+
 }
