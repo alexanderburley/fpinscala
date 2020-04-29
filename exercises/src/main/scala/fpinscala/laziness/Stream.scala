@@ -131,6 +131,11 @@ object Stream {
     Cons(() => head, () => tail)
   }
 
+  def constant[A](a: A): Stream[A] = {
+    lazy val tail = cons(a, constant(a))
+    cons(a, tail)
+  }
+
   def empty[A]: Stream[A] = Empty
 
   def apply[A](as: A*): Stream[A] =
@@ -138,7 +143,37 @@ object Stream {
     else cons(as.head, apply(as.tail: _*))
 
   val ones: Stream[Int] = Stream.cons(1, ones)
-  def from(n: Int): Stream[Int] = ???
 
-  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = ???
+  def from(n: Int): Stream[Int] = {
+    lazy val tail = cons(n, from(n + 1))
+    tail
+  }
+
+  val fibs: Stream[Int] = {
+    def calc(prev: Int, curr: Int): Stream[Int] = {
+      lazy val tail = cons(prev + curr, calc(curr, prev + curr))
+      tail
+    }
+    cons(0, cons(1, calc(0, 1)))
+  }
+
+  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] =
+    f(z) match {
+      case Some((h, s)) => cons(h, unfold(s)(f))
+      case None         => empty
+    }
+
+  def constantFold[A](a: A): Stream[A] = unfold(a)(a => Some((a, a)))
+
+  def fromFold(n: Int): Stream[Int] = unfold(n)(a => Some((a, a + 1)))
+
+  /*
+  Scala provides shorter syntax when the first action of a function literal is to match on an expression.  The function passed to `unfold` in `fibsViaUnfold` is equivalent to `p => p match { case (f0,f1) => ... }`, but we avoid having to choose a name for `p`, only to pattern match on it.
+   */
+  val fibsViaUnfold =
+    unfold((0, 1)) { case (f0, f1) => Some((f0, (f1, f0 + f1))) }
+
+  val fibsFold: Stream[Int] =
+    unfold((0, 1))(a => a match { case (x, y) => Some((x, (y, x + y))) })
+
 }

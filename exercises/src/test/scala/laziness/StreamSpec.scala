@@ -93,4 +93,34 @@ class StreamSpec extends FlatSpec {
     assert((s.flatMap { x => s }).toList == s.toList ::: s.toList ::: s.toList)
   }
 
+  "constant" should "return an infinite stream" in {
+    assert(constant(1).take(5).toList == List(1, 1, 1, 1, 1))
+  }
+
+  "constantFold" should "return an infinite stream" in {
+    assert(constantFold(1).take(5).toList == List(1, 1, 1, 1, 1))
+  }
+
+  "from" should "return an infinite stream of integers from n" in {
+    assert(from(1).take(5).toList == List(1, 2, 3, 4, 5))
+  }
+
+  "fromFold" should "return an infinite stream of integers from n" in {
+    assert(fromFold(1).take(5).toList == List(1, 2, 3, 4, 5))
+  }
+
+  "fibs" should "generate the fibonacci numbers" in {
+    assert(fibs.take(6).toList == List(0, 1, 1, 2, 3, 5))
+  }
+
+  "fibsFold" should "generate the fibonacci numbers" in {
+    assert(fibsFold.take(6).toList == List(0, 1, 1, 2, 3, 5))
+  }
+
+  "unfold" should "build a stream from a function producting the next state" in {
+    assert(
+      unfold(1)(_ => Some((1, 1))).take(5).toList == List(1, 1, 1, 1, 1)
+    )
+  }
+
 }
