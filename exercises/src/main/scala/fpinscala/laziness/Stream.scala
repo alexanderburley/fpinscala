@@ -54,6 +54,24 @@ trait Stream[+A] {
     case Cons(h, t)  => cons(h(), t().take(n - 1))
   }
 
+  def takeF(n: Int): Stream[A] = unfold(this) {
+    case Cons(h, t) if n > 0 => Some((h(), t().takeF(n - 1)))
+    case _                   => None
+  }
+
+  def takeViaUnfold(n: Int): Stream[A] =
+    unfold((this, n)) {
+      case (Cons(h, t), 1)          => Some((h(), (empty, 0)))
+      case (Cons(h, t), n) if n > 1 => Some((h(), (t(), n - 1)))
+      case _                        => None
+    }
+
+  // def mapF[B](f: A => B): Stream[B] =
+  // unfold(this) {
+  //   case Cons(h, t) => Some((f(h()), t()))
+  //   case _          => None
+  // }
+
   /*
     Create a new Stream[A] from taking the n first elements from this. We can achieve that by recursively
     calling take on the invoked tail of a cons cell. We make sure that the tail is not invoked unless
@@ -77,6 +95,17 @@ trait Stream[+A] {
     case _                    => Empty
   }
 
+  def takeWhileF(p: A => Boolean): Stream[A] = unfold(this) {
+    case Cons(h, t) if p(h()) => Some((h(), t()))
+    case _                    => None
+  }
+
+  def takeWhileViaUnfold(f: A => Boolean): Stream[A] =
+    unfold(this) {
+      case Cons(h, t) if f(h()) => Some((h(), t()))
+      case _                    => None
+    }
+
   def takeWhileFold(p: A => Boolean): Stream[A] =
     (this foldRight (empty[A]))((x, xs) => if (p(x)) cons(x, xs) else xs)
 
@@ -95,11 +124,18 @@ trait Stream[+A] {
   def map[B](f: A => B): Stream[B] =
     (this foldRight (empty[B]))((x, xs) => cons(f(x), xs))
 
+  def mapF[B](f: A => B): Stream[B] =
+    unfold(this) {
+      case Cons(h, t) => Some((f(h()), t()))
+      case _          => None
+    }
+
   def mapAnswer[B](f: A => B): Stream[B] =
     foldRight(empty[B])((h, t) => cons(f(h), t))
 
   def filter(f: A => Boolean): Stream[A] =
     (this foldRight (empty[A])) { (x, xs) => if (f(x)) cons(x, xs) else xs }
+
   def filterAnswer(f: A => Boolean): Stream[A] =
     foldRight(empty[A])((h, t) =>
       if (f(h)) cons(h, t)
@@ -117,6 +153,20 @@ trait Stream[+A] {
 
   def flatMapAnswer[B](f: A => Stream[B]): Stream[B] =
     foldRight(empty[B])((h, t) => f(h) append t)
+
+  def zipWith[B, C](s: Stream[B])(f: (A, B) => C): Stream[C] =
+    unfold((this, s)) {
+      case ((Cons(ha, ta), Cons(hb, tb))) =>
+        Some((f(ha(), hb()), (ta(), tb())))
+      case _ => None
+    }
+
+  def zipWithAnser[B, C](s2: Stream[B])(f: (A, B) => C): Stream[C] =
+    unfold((this, s2)) {
+      case (Cons(h1, t1), Cons(h2, t2)) =>
+        Some((f(h1(), h2()), (t1(), t2())))
+      case _ => None
+    }
 
   def startsWith[B](s: Stream[B]): Boolean = ???
 }

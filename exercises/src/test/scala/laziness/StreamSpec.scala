@@ -24,6 +24,14 @@ class StreamSpec extends FlatSpec {
     assert(s.take(0).toList == List())
   }
 
+  "takeF" should "take the first x elements of a list" in {
+    assert(s.takeF(2).toList == List(1, 2))
+  }
+
+  it should "take 0 elements " in {
+    assert(s.takeF(0).toList == List())
+  }
+
   "drop" should "drop the first x elements of a list" in {
     assert(s.drop(2).toList == List(3))
   }
@@ -42,6 +50,18 @@ class StreamSpec extends FlatSpec {
 
   it should "takeFromEmpty" in {
     assert(Empty.takeWhile { x: Int => x < 3 }.toList == List())
+  }
+
+  "takeWhileF" should "returns all starting elements matching the predicate" in {
+    assert(s.takeWhileF(x => x < 3).toList == List(1, 2))
+  }
+
+  it should "takeFromEmpty" in {
+    assert(Empty.takeWhileF { x: Int => x < 3 }.toList == List())
+  }
+
+  "takeWhileViaUnfold" should "returns all starting elements matching the predicate" in {
+    assert(s.takeWhileViaUnfold(x => x < 3).toList == List(1, 2))
   }
 
   "forAll" should "check that for all items, they match a predicate" in {
@@ -79,6 +99,14 @@ class StreamSpec extends FlatSpec {
 
   it should "map empty list" in {
     assert((Empty.map(e => e)).toList == List())
+  }
+
+  "mapF" should "map the sequence" in {
+    assert((s mapF { x: Int => x + 1 }).toList === List(2, 3, 4))
+  }
+
+  it should "map empty list" in {
+    assert((Empty.mapF(e => e)).toList == List())
   }
 
   "filter" should "filter second element" in {
@@ -121,6 +149,10 @@ class StreamSpec extends FlatSpec {
     assert(
       unfold(1)(_ => Some((1, 1))).take(5).toList == List(1, 1, 1, 1, 1)
     )
+  }
+
+  "zipWith" should "add values of one list onto the other" in {
+    assert((s zipWith s)(_ + _).toList == List(2, 4, 6))
   }
 
 }
