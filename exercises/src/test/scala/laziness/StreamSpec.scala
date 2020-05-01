@@ -155,4 +155,12 @@ class StreamSpec extends FlatSpec {
     assert((s zipWith s)(_ + _).toList == List(2, 4, 6))
   }
 
+  "startsWith" should "check s starts with 1.2.3" in {
+    assert(s startsWith s)
+  }
+
+  "startsWith" should "check s starts with empty" in {
+    assert(s startsWith Empty)
+  }
+
 }
