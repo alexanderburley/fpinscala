@@ -159,8 +159,14 @@ class StreamSpec extends FlatSpec {
     assert(s startsWith s)
   }
 
-  "startsWith" should "check s starts with empty" in {
+  it should "check s starts with empty" in {
     assert(s startsWith Empty)
   }
+
+  // "tailsUnfold" should "retrun the stream of suffixes of the input sequence" in {
+  //   assert(
+  //     s.tails == Stream(Stream(1, 2, 3), Stream(2, 3), Stream(3), Strea)
+  //   )
+  // }
 
 }
