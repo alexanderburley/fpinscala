@@ -91,7 +91,7 @@ class OptionSpec extends FlatSpec {
     )
   }
 
-  it should "return the same list" in {
-    seqTrav(List(Some(0), Some(1), Some(2))) == List(Some(0), List(1), Some(2))
-  }
+  // it should "return the same list" in {
+  //   seqTrav(List(Some(0), Some(1), Some(2))) == List(Some(0), List(1), Some(2))
+  // }
 }
