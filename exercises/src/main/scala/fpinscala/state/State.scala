@@ -33,6 +33,15 @@ object RNG {
       (f(a), rng2)
     }
 
+  // We need to be quite careful not to skew the generator.
+  // Since `Int.Minvalue` is 1 smaller than `-(Int.MaxValue)`,
+  // it suffices to increment the negative numbers by 1 and make them positive.
+  // This maps Int.MinValue to Int.MaxValue and -1 to 0.
+  def nonNegativeIntAnswer(rng: RNG): (Int, RNG) = {
+    val (i, r) = rng.nextInt
+    (if (i < 0) -(i + 1) else i, r)
+  }
+
   def nonNegativeInt(rng: RNG): (Int, RNG) = rng.nextInt match {
     case (n, rng) if n < 0             => (n * -1, rng)
     case (n, rng) if n == Int.MinValue => (Int.MaxValue, rng)
@@ -40,7 +49,17 @@ object RNG {
   }
   // if (rng.nextInt < 0) rng.nextInt * -1 else rng.nextInt
 
-  def double(rng: RNG): (Double, RNG) = ???
+  def double(rng: RNG): (Double, RNG) = rng.nextInt match {
+    case (n, rng) if n < 0 => ((n * -1) / Int.MaxValue.toDouble, rng)
+    case (n, rng) if n == Int.MaxValue =>
+      (Int.MaxValue.toDouble / (Int.MaxValue - 1), rng)
+    case (n, rng) => (n.toDouble / Int.MaxValue, rng)
+  }
+
+  def doubleAnswer(rng: RNG): (Double, RNG) = {
+    val (i, r) = nonNegativeInt(rng)
+    (i / (Int.MaxValue.toDouble + 1), r)
+  }
 
   def intDouble(rng: RNG): ((Int, Double), RNG) = ???
 
