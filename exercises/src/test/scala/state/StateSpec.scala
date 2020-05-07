@@ -18,4 +18,31 @@ class StateSpec extends FlatSpec {
     val (n, rng) = double(RNG.Simple(16159453))
     assert(n >= 0 && n < 1)
   }
+
+  "intDouble" should "generate a random int and double tuple" in {
+    val ((i, d), rng) = intDouble(RNG.Simple(1))
+    assert(i == 1151252339)
+    val doubleRange = (384748.toDouble / Int.MaxValue.toDouble)
+
+    assert((d > (doubleRange - 0.0001)) && (d < (doubleRange + 0.0001)))
+  }
+  "doubleInt" should "generate a random int and double tuple" in {
+    val ((d, i), rng) = doubleInt(RNG.Simple(1))
+    assert(i == 1151252339)
+    val doubleRange = (384748.toDouble / Int.MaxValue.toDouble)
+
+    assert((d > (doubleRange - 0.0001)) && (d < (doubleRange + 0.0001)))
+  }
+  "double3" should "generate a random double triple" in {
+    val ((d1, d2, d3), rng) = double3(RNG.Simple(1))
+    val double1Range = (384748.toDouble / Int.MaxValue.toDouble)
+    val double2Range = (1151252339.toDouble / Int.MaxValue.toDouble)
+    assert((d1 > (double1Range - 0.0001)) && (d1 < (double1Range + 0.0001)))
+    assert((d2 > (double2Range - 0.0001)) && (d1 < (double2Range + 0.0001)))
+  }
+
+  "ints" should "generate a list of random numbers" in {
+    val (l, r) = ints(3)(RNG.Simple(1))
+    assert(l == List(549383847, 1151252339, 384748))
+  }
 }

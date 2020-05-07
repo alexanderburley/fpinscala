@@ -61,13 +61,33 @@ object RNG {
     (i / (Int.MaxValue.toDouble + 1), r)
   }
 
-  def intDouble(rng: RNG): ((Int, Double), RNG) = ???
+  def intDouble(rng: RNG): ((Int, Double), RNG) = {
+    val (d, r) = doubleAnswer(rng)
+    val (i, r1) = nonNegativeInt(r)
+    ((i, d), r1)
+  }
 
-  def doubleInt(rng: RNG): ((Double, Int), RNG) = ???
+  def doubleInt(rng: RNG): ((Double, Int), RNG) = intDouble(rng) match {
+    case ((i, d), r) => ((d, i), r)
+  }
 
-  def double3(rng: RNG): ((Double, Double, Double), RNG) = ???
+  def double3(rng: RNG): ((Double, Double, Double), RNG) = {
+    val (d1, r1) = doubleAnswer(rng)
+    val (d2, r2) = doubleAnswer(r1)
+    val (d3, r3) = doubleAnswer(r2)
+    ((d1, d2, d3), r3)
+  }
 
-  def ints(count: Int)(rng: RNG): (List[Int], RNG) = ???
+  def ints(count: Int)(rng: RNG): (List[Int], RNG) = {
+    @annotation.tailrec
+    def counter(x: Int, r: RNG, acc: List[Int]): (List[Int], RNG) =
+      if (x == count) (acc, r)
+      else {
+        val (i, r1) = nonNegativeInt(r)
+        counter(x + 1, r1, i :: acc)
+      }
+    counter(0, rng, List[Int]())
+  }
 
   def map2[A, B, C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = ???
 
