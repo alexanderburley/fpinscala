@@ -20,18 +20,13 @@ object RNG {
     }
   }
 
+  // Takes a state and returns a value and next state
   type Rand[+A] = RNG => (A, RNG)
 
   val int: Rand[Int] = _.nextInt
 
   def unit[A](a: A): Rand[A] =
     rng => (a, rng)
-
-  def map[A, B](s: Rand[A])(f: A => B): Rand[B] =
-    rng => {
-      val (a, rng2) = s(rng)
-      (f(a), rng2)
-    }
 
   // We need to be quite careful not to skew the generator.
   // Since `Int.Minvalue` is 1 smaller than `-(Int.MaxValue)`,
@@ -61,6 +56,9 @@ object RNG {
     (i / (Int.MaxValue.toDouble + 1), r)
   }
 
+  val _double: Rand[Double] =
+    map(nonNegativeInt)(_ / (Int.MaxValue.toDouble + 1))
+
   def intDouble(rng: RNG): ((Int, Double), RNG) = {
     val (d, r) = doubleAnswer(rng)
     val (i, r1) = nonNegativeInt(r)
@@ -89,7 +87,19 @@ object RNG {
     counter(0, rng, List[Int]())
   }
 
-  def map2[A, B, C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = ???
+  def map[A, B](s: Rand[A])(f: A => B): Rand[B] =
+    rng => {
+      val (a, rng2) = s(rng)
+      (f(a), rng2)
+    }
+
+  def map2[A, B, C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] =
+    rng => {
+      val (a, rngA) = ra(rng)
+      val (b, rngB) = rb(rng)
+      println(a, b)
+      (f(a, b), rngA)
+    }
 
   def sequence[A](fs: List[Rand[A]]): Rand[List[A]] = ???
 

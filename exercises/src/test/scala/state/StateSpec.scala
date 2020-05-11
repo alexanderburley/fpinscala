@@ -45,4 +45,18 @@ class StateSpec extends FlatSpec {
     val (l, r) = ints(3)(RNG.Simple(1))
     assert(l == List(549383847, 1151252339, 384748))
   }
+
+  "map2" should "take two actions and a function to combine results" in {
+    val x = unit(1)
+    val y = unit(2)
+
+    val (v, r2) =
+      map2(x, y)((a, b) => a + b)(
+        RNG.Simple(1)
+      )
+
+    assert(v == 3)
+    assert(r2 == RNG.Simple(1))
+  }
+
 }
