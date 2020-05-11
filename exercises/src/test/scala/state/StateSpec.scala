@@ -59,4 +59,14 @@ class StateSpec extends FlatSpec {
     assert(r2 == RNG.Simple(1))
   }
 
+  "sequence" should "combine a list of transition into a single transition" in {
+    val x = unit(1)
+    val y = unit(2)
+    val z = unit(3)
+
+    val (v, r) = sequence(List(x, y, z))(RNG.Simple(1))
+    assert(v == List(1, 2, 3))
+    assert(r === RNG.Simple(1))
+  }
+
 }

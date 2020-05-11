@@ -97,11 +97,21 @@ object RNG {
     rng => {
       val (a, rngA) = ra(rng)
       val (b, rngB) = rb(rng)
-      println(a, b)
       (f(a, b), rngA)
     }
 
-  def sequence[A](fs: List[Rand[A]]): Rand[List[A]] = ???
+  def sequence[A](fs: List[Rand[A]]): Rand[List[A]] =
+    rng =>
+      fs.foldRight((List[A](), rng)) { (v, acc) =>
+        {
+          val (accList, currRng) = acc
+          val (generatedValue, nextRng) = v(rng)
+          (generatedValue :: accList, nextRng)
+        }
+      }
+
+  def sequenceAnswer[A](fs: List[Rand[A]]): Rand[List[A]] =
+    fs.foldRight(unit(List[A]()))((f, acc) => map2(f, acc)(_ :: _))
 
   def flatMap[A, B](f: Rand[A])(g: A => Rand[B]): Rand[B] = ???
 }
