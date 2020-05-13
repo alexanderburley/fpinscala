@@ -113,7 +113,53 @@ object RNG {
   def sequenceAnswer[A](fs: List[Rand[A]]): Rand[List[A]] =
     fs.foldRight(unit(List[A]()))((f, acc) => map2(f, acc)(_ :: _))
 
-  def flatMap[A, B](f: Rand[A])(g: A => Rand[B]): Rand[B] = ???
+  def flatMap[A, B](f: Rand[A])(g: A => Rand[B]): Rand[B] = rng => {
+    val (x, r) = f(rng)
+    g(x)(r)
+  }
+
+  def nonNegativeLessThanBook(n: Int): Rand[Int] = { rng =>
+    {
+      val (i, rng2) = nonNegativeInt(rng)
+      val mod = i % n
+      if (i + (n - 1) - mod >= 0) (mod, rng2)
+      else nonNegativeLessThan(n)(rng2)
+    }
+  }
+
+  def nonNegativeLessThan(n: Int): Rand[Int] = {
+    flatMap(nonNegativeInt) { i =>
+      val mod = i % n
+      if (i + (n - 1) - mod >= 0) unit(mod) else nonNegativeLessThan(n)
+    }
+  }
+
+  // def map[A, B](s: Rand[A])(f: A => B): Rand[B] =
+  //   rng => {
+  //     val (a, rng2) = s(rng)
+  //     (f(a), rng2)
+  //   }
+
+  // def map2[A, B, C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] =
+  //   rng => {
+  //     val (a, rngA) = ra(rng)
+  //     val (b, rngB) = rb(rng)
+  //     (f(a, b), rngA)
+  //   }
+
+  def mapFM[A, B](s: Rand[A])(f: A => B): Rand[B] = flatMap(s)(x => unit(f(x)))
+
+  // def map2FM[A, B, C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] =
+  //   flatMap { rng =>
+  //     {
+  //       val (a, rngA) = ra(rng)
+  //       val (b, rngB) = rb(rngA)
+  //       ((a, b), rngB)
+  //     }
+  //   } { (t) => unit(f(t._1, t._2)) }
+
+  def map2FM[A, B, C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] =
+    flatMap(ra)(a => map(rb)(b => f(a, b)))
 }
 
 case class State[S, +A](run: S => (A, S)) {

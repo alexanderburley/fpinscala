@@ -46,12 +46,39 @@ class StateSpec extends FlatSpec {
     assert(l == List(549383847, 1151252339, 384748))
   }
 
+  "map" should "take an action and apply" in {
+    val x = unit(1)
+    val (y, r) = map(x)(a => a + 1)(RNG.Simple(1))
+    assert(y == 2)
+    assert(r == RNG.Simple(1))
+  }
+
+  "mapFM" should "take an action and apply" in {
+    val x = unit(1)
+    val (y, r) = mapFM(x)(a => a + 1)(RNG.Simple(1))
+    assert(y == 2)
+    assert(r == RNG.Simple(1))
+  }
+
   "map2" should "take two actions and a function to combine results" in {
     val x = unit(1)
     val y = unit(2)
 
     val (v, r2) =
       map2(x, y)((a, b) => a + b)(
+        RNG.Simple(1)
+      )
+
+    assert(v == 3)
+    assert(r2 == RNG.Simple(1))
+  }
+
+  "map2FM" should "take two actions and a function to combine results" in {
+    val x = unit(1)
+    val y = unit(2)
+
+    val (v, r2) =
+      map2FM(x, y)((a, b) => a + b)(
         RNG.Simple(1)
       )
 
@@ -69,4 +96,20 @@ class StateSpec extends FlatSpec {
     assert(r === RNG.Simple(1))
   }
 
+  "flatMap" should "take two actions and a function to combine results" in {
+    val x = unit(1)
+
+    val (v, r2) =
+      flatMap(x)(x => unit(x))(
+        RNG.Simple(1)
+      )
+
+    assert(v == 1)
+    assert(r2 == RNG.Simple(1))
+  }
+
+  "nonNegativeLessThan" should "return a number less than the value" in {
+    val (x, r) = nonNegativeLessThan(10)(RNG.Simple(1))
+    assert(x == 8)
+  }
 }
