@@ -11,4 +11,9 @@ class ParSpec extends FlatSpec {
     val asyncFunction = asyncF((a: Int) => List(a))
     assert(asyncFunction(1)(pool).get === List(1))
   }
+
+  "sequence" should "Turn a list of parallel units into a parallel unit containing a list of values" in {
+    val values = List(unit(1), unit(2), unit(3))
+    assert(sequence(values)(pool).get === List(1, 2, 3))
+  }
 }
