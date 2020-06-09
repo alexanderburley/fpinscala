@@ -82,6 +82,15 @@ object Par {
   // def sequence[A](as: List[Par[A]]): Par[List[A]] =
   //   map(sequenceBalanced(as.toIndexedSeq))(_.toList)
 
+  def parFilter[A](as: List[A])(f: A => Boolean): Par[List[A]] = {
+    def filter(a: A): List[A] = if (f(a)) List(a) else Nil
+    def filtered = as map asyncF(filter)
+    map(sequence(filtered))(_.flatten)
+    // def filter(a: A): Par[List[A]] = if (f(a)) unit(List(a)) else unit(Nil)
+    // sequence(as flatMap (fork(filter)))
+    // Turn list into list of
+  }
+  // sequence(as flatmap (fork(a => if (f(a) a else Nil))))
   def choice[A](cond: Par[Boolean])(t: Par[A], f: Par[A]): Par[A] =
     es =>
       if (run(es)(cond).get)

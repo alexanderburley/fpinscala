@@ -16,4 +16,9 @@ class ParSpec extends FlatSpec {
     val values = List(unit(1), unit(2), unit(3))
     assert(sequence(values)(pool).get === List(1, 2, 3))
   }
+
+  "parFilter" should "Filter elements of a list in parallel" in {
+    val filtered = parFilter(List(1, 2, 3)) { a => a > 1 }
+    assert(filtered(pool).get === List(2, 3))
+  }
 }
