@@ -86,10 +86,27 @@ object Par {
     def filter(a: A): List[A] = if (f(a)) List(a) else Nil
     def filtered = as map asyncF(filter)
     map(sequence(filtered))(_.flatten)
-    // def filter(a: A): Par[List[A]] = if (f(a)) unit(List(a)) else unit(Nil)
-    // sequence(as flatMap (fork(filter)))
-    // Turn list into list of
   }
+
+  // def sum(ints: IndexedSeq[Int]): Par[Int] =
+  //   if (ints.length <= 1) unit(ints.headOption getOrElse (0))
+  //   else {
+  //     val (l, r) = ints.splitAt(ints.length / 2)
+  //     map2(
+  //       fork(sum(1)),
+  //       fork(sum(r))
+  //     )(_ + _)
+  //   }
+
+  def parSum[A](as: IndexedSeq[A])(z: A, f: (A, A) => A): Par[A] =
+    if (as.length <= 1) unit(as.headOption getOrElse (z))
+    else {
+      val (l, r) = as.splitAt(as.length / 2)
+      map2(
+        fork(parSum(l)(z, f)),
+        fork(parSum(r)(z, f))
+      )(f)
+    }
   // sequence(as flatmap (fork(a => if (f(a) a else Nil))))
   def choice[A](cond: Par[Boolean])(t: Par[A], f: Par[A]): Par[A] =
     es =>

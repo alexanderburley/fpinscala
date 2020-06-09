@@ -21,4 +21,15 @@ class ParSpec extends FlatSpec {
     val filtered = parFilter(List(1, 2, 3)) { a => a > 1 }
     assert(filtered(pool).get === List(2, 3))
   }
+
+  "parSum" should "Sum the items" in {
+    val summed = parSum(IndexedSeq(1, 2, 3))(0, _ + _)
+    assert(summed(pool).get === 6)
+  }
+
+  it should "Get the largest element in the list" in {
+    val max = parSum(IndexedSeq(1, 10, 3))(0, (a, b) => if (a > b) a else b)
+    assert(max(pool).get === 10)
+  }
+
 }
