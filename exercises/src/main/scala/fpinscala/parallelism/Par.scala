@@ -7,7 +7,7 @@ object Par {
   type Par[A] = ExecutorService => Future[A]
 
   def run[A](s: ExecutorService)(a: Par[A]): Future[A] = a(s)
-
+  def lazyUnit[A](a: => A): Par[A] = fork(unit(a))
   def asyncF[A, B](f: A => B): A => Par[B] = { a: A => fork(unit(f(a))) }
 
   def unit[A](a: A): Par[A] =
