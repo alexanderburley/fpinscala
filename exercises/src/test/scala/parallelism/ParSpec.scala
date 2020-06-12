@@ -32,4 +32,22 @@ class ParSpec extends FlatSpec {
     assert(max(pool).get === 10)
   }
 
+  "choiceN" should "Should run n and use it to determine what to run" in {
+    val cond = unit(1)
+    val res = choiceN(cond)(List(cond, unit(2)))
+    assert(res(pool).get === 2)
+  }
+
+  "choiceWithChoiceN" should "Should run for true using choiceN" in {
+    val cond = unit(true)
+    val res = choiceWithChoiceN(cond)(unit(2), unit(3))
+    assert(res(pool).get === 2)
+  }
+
+  "choiceWithChoiceN" should "Should run for false using choiceN" in {
+    val cond = unit(false)
+    val res = choiceWithChoiceN(cond)(unit(2), unit(3))
+    assert(res(pool).get === 3)
+  }
+
 }

@@ -107,6 +107,15 @@ object Par {
         fork(parSum(r)(z, f))
       )(f)
     }
+  def choiceN[A](n: Par[Int])(choices: List[Par[A]]): Par[A] =
+    es =>
+      n(es).get match {
+        case x => run(es)(choices(x))
+      }
+
+  def choiceWithChoiceN[A](cond: Par[Boolean])(t: Par[A], f: Par[A]): Par[A] =
+    choiceN(map(cond)(a => if (a) 1 else 0))(List(f, t))
+
   // sequence(as flatmap (fork(a => if (f(a) a else Nil))))
   def choice[A](cond: Par[Boolean])(t: Par[A], f: Par[A]): Par[A] =
     es =>
