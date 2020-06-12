@@ -113,8 +113,18 @@ object Par {
         case x => run(es)(choices(x))
       }
 
+  def choiceNAnswer[A](n: Par[Int])(choices: List[Par[A]]): Par[A] =
+    es => {
+      val ind = run(es)(n).get // Full source files
+      run(es)(choices(ind))
+    }
   def choiceWithChoiceN[A](cond: Par[Boolean])(t: Par[A], f: Par[A]): Par[A] =
     choiceN(map(cond)(a => if (a) 1 else 0))(List(f, t))
+
+  def choiceViaChoiceNAnswer[A](
+      a: Par[Boolean]
+  )(ifTrue: Par[A], ifFalse: Par[A]): Par[A] =
+    choiceN(map(a)(b => if (b) 0 else 1))(List(ifTrue, ifFalse))
 
   // sequence(as flatmap (fork(a => if (f(a) a else Nil))))
   def choice[A](cond: Par[Boolean])(t: Par[A], f: Par[A]): Par[A] =
