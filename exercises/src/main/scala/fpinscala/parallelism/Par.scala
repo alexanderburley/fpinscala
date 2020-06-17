@@ -107,11 +107,6 @@ object Par {
         fork(parSum(r)(z, f))
       )(f)
     }
-  def choiceN[A](n: Par[Int])(choices: List[Par[A]]): Par[A] =
-    es =>
-      n(es).get match {
-        case x => run(es)(choices(x))
-      }
 
   def choiceNAnswer[A](n: Par[Int])(choices: List[Par[A]]): Par[A] =
     es => {
@@ -132,6 +127,34 @@ object Par {
       if (run(es)(cond).get)
         t(es) // Notice we are blocking on the result of `cond`.
       else f(es)
+
+  def choiceN[A](n: Par[Int])(choices: List[Par[A]]): Par[A] =
+    es =>
+      n(es).get match {
+        case x => run(es)(choices(x))
+      }
+
+  def choiceMap[K, V](key: Par[K])(choices: Map[K, Par[V]]): Par[V] =
+    es => {
+      val k = run(es)(key).get
+      run(es)(choices(k))
+    }
+
+  def flatMap[A, B](p: Par[A])(choices: A => Par[B]): Par[B] =
+    es => {
+      val k = run(es)(p).get
+      run(es)(choices(k))
+    }
+
+  // see nonblocking implementation in `Nonblocking.scala`
+  def join[A](a: Par[Par[A]]): Par[A] =
+    es => run(es)(run(es)(a).get())
+
+  def joinViaFlatMap[A](a: Par[Par[A]]): Par[A] =
+    flatMap(a)(x => x)
+
+  def flatMapViaJoin[A, B](p: Par[A])(f: A => Par[B]): Par[B] =
+    join(map(p)(f))
 
   /* Gives us infix syntax for `Par`. */
   implicit def toParOps[A](p: Par[A]): ParOps[A] = new ParOps(p)
