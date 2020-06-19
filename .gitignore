@@ -12,5 +12,5 @@ project.vim
 .metadata/
 .metals/
 .bloop/
-.code-workspace
+*.code-workspace
 metals.sbt
