@@ -1,5 +1,5 @@
 val commonSettings = Seq(
-  scalaVersion := "2.12.1",
+  scalaVersion := "2.13.2",
   libraryDependencies += "org.scalactic" %% "scalactic" % "3.1.1",
   libraryDependencies += "org.scalatest" %% "scalatest" % "3.1.1" % "test",
   logBuffered in Test := false
