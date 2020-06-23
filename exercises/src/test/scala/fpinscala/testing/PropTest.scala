@@ -1,6 +1,25 @@
 package fpinscala.testing
 
-class PropTest extends org.scalatest.FlatSpec {}
+class PropFalseStub extends Prop {
+  override def check: Boolean = false
+}
+class PropTrueStub extends Prop {
+  override def check: Boolean = true
+}
+class PropTest extends org.scalatest.FlatSpec {
+  "&&" should "return true for two true stubs" in {
+    val res: Boolean = new PropTrueStub() && new PropTrueStub()
+    assert(res)
+  }
+  "&&" should "return false for two false stubs" in {
+    val res: Boolean = new PropFalseStub() && new PropFalseStub()
+    assert(res === false)
+  }
+  "&&" should "return false for 1 true and 1 false stub" in {
+    val res: Boolean = new PropTrueStub() && new PropFalseStub()
+    assert(res === false)
+  }
+}
 
 /*
 
