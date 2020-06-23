@@ -14,3 +14,4 @@ project.vim
 .bloop/
 *.code-workspace
 metals.sbt
+project/metals.sbt\
